@@ -43,7 +43,5 @@ views: top_down
 
 #### NAV2 #########################
 cd ~/robodojo/slam
-
-tmux new -s nav2
 source install/setup.bash
 ros2 launch bringup nav2.launch.py
