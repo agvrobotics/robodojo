@@ -44,3 +44,5 @@ views: top_down
 #### NAV2 #########################
 source install/setup.bash
 ros2 launch bringup nav2.launch.py
+
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false
