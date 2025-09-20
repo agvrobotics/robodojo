@@ -9,7 +9,7 @@ def generate_launch_description():
     nav2_bringup_dir = get_package_share_directory("nav2_bringup")
     bringup_launch = os.path.join(nav2_bringup_dir, "launch", "bringup_launch.py")
 
-    map_file = "/home/sierra-95/Documents/robodojo/slam/michael.yaml"
+    map_file = "/home/sierra-95/Documents/robodojo/slam/bringup.yaml"
 
     return LaunchDescription([
         # Map server
