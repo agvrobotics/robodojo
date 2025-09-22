@@ -39,20 +39,6 @@ volatile long countRR = 0;
 unsigned long lastReport = 0;
 const unsigned long reportInterval = 20; // 50 Hz
 
-//-------Car params----------------
-const float WHEEL_RADIUS = 0.0425; 
-//wheelbase is the distance between the left and right wheel contact points
-const float WHEEL_BASE = 0.2325;
-const float COUNTS_PER_REV = 4096.0;
-
-// ---- PID constants ----
-float Kp = 0.6, Ki = 0.02, Kd = 0.01;
-float integRL = 0, integRR = 0;
-float lastErrRL = 0, lastErrRR = 0;
-long  lastCountRL = 0, lastCountRR = 0;
-volatile float targetTicksRL = 0, targetTicksRR = 0;
-volatile int basePWM_RL = 0, basePWM_RR = 0;
-
 void setup() {
   // Motor pins
   pinMode(ENA_F, OUTPUT); pinMode(ENB_F, OUTPUT);
@@ -89,26 +75,22 @@ void loop() {
       setMotorPWM(linear, angular);
     }
   }
-  unsigned long now = millis();
-  float dt = (now - lastReport) / 1000.0; // seconds
-  lastReport = now;
-
-  // enable PID only if current motion is straight
-  bool pidEnable = (abs(targetTicksRL - targetTicksRR) < 1e-3); // angular == 0 check
-  updatePID(dt, pidEnable);
-
-  // still print encoders for logging
-  Serial.print(countRL);
-  Serial.print(",");
-  Serial.print(countRR);
-  Serial.println();
-
+  // Report encoder counts at fixed rate
+  if (millis() - lastReport >= reportInterval) {
+    lastReport = millis();
+    Serial.print(countRL);
+    Serial.print(",");
+    Serial.print(countRR);
+    Serial.println();
+  }
 }
 
 // ------------------- Convert cmd_vel to PWM -------------------
 void setMotorPWM(float linear, float angular) {
-  
+  //wheelbase is the distance between the left and right wheel contact points
+  const float WHEEL_BASE = 0.2325;
   const int MAX_PWM = 255;
+
   const float MAX_LINEAR  = 0.425;   // measured m/s
   const float MAX_ANGULAR = 2.99;    // measured rad/s
 
@@ -125,22 +107,14 @@ void setMotorPWM(float linear, float angular) {
   // Scale to PWM
   int pwmFL = constrain(int((v_left / MAX_LINEAR) * MAX_PWM), -MAX_PWM, MAX_PWM);
   int pwmFR = constrain(int((v_right / MAX_LINEAR) * MAX_PWM), -MAX_PWM, MAX_PWM);
+  int pwmRL = pwmFL;
+  int pwmRR = pwmFR;
 
   // Deadzone
   if (abs(pwmFL) < 30) pwmFL = 0;
   if (abs(pwmFR) < 30) pwmFR = 0;
   if (abs(pwmRL) < 30) pwmRL = 0;
   if (abs(pwmRR) < 30) pwmRR = 0;
-
-  /**PID LOGIC START*/
-  basePWM_RL = pwmRL;
-  basePWM_RR = pwmRR;
-
-  // convert target velocity to encoder ticks/sec
-  float wheelCirc = 2.0 * PI * WHEEL_RADIUS;
-  targetTicksRL = (v_left  / wheelCirc) * COUNTS_PER_REV;
-  targetTicksRR = (v_right / wheelCirc) * COUNTS_PER_REV;
-  /**PID LOGIC END*/
 
   // Front Left
   if (pwmFL >= 0) { digitalWrite(IN1_F,HIGH); digitalWrite(IN2_F,LOW); }
@@ -152,46 +126,16 @@ void setMotorPWM(float linear, float angular) {
   else { digitalWrite(IN3_F,LOW); digitalWrite(IN4_F,HIGH); pwmFR = -pwmFR; }
   analogWrite(ENB_F, pwmFR);
 
-}
+  // Rear Left
+  if (pwmRL >= 0) { digitalWrite(IN3_R,HIGH); digitalWrite(IN4_R,LOW); }
+  else { digitalWrite(IN3_R,LOW); digitalWrite(IN4_R,HIGH); pwmRL = -pwmRL; }
+  analogWrite(ENA_R, pwmRL);
 
-void updatePID(float dt, bool pidEnable) {
-  long dRL = countRL - lastCountRL; lastCountRL = countRL;
-  long dRR = countRR - lastCountRR; lastCountRR = countRR;
+  // Rear Right
+  if (pwmRR >= 0) { digitalWrite(IN1_R,HIGH); digitalWrite(IN2_R,LOW); }
+  else { digitalWrite(IN1_R,LOW); digitalWrite(IN2_R,HIGH); pwmRR = -pwmRR; }
+  analogWrite(ENB_R, pwmRR);
 
-  float measRL = dRL / dt; 
-  float measRR = dRR / dt;
-
-  int pwmRL_out = basePWM_RL;
-  int pwmRR_out = basePWM_RR;
-
-  if (pidEnable) {
-    // PID Left
-    float errL = targetTicksRL - measRL;
-    integRL += errL * dt;
-    integRL = constrain(integRL, -10000, 10000);
-    float dErrL = (errL - lastErrRL) / dt;
-    lastErrRL = errL;
-    float outL = Kp*errL + Ki*integRL + Kd*dErrL;
-
-    // PID Right
-    float errR = targetTicksRR - measRR;
-    integRR += errR * dt;
-    integRR = constrain(integRR, -10000, 10000);
-    float dErrR = (errR - lastErrRR) / dt;
-    lastErrRR = errR;
-    float outR = Kp*errR + Ki*integRR + Kd*dErrR;
-
-    pwmRL_out = constrain(int(basePWM_RL + outL), -255, 255);
-    pwmRR_out = constrain(int(basePWM_RR + outR), -255, 255);
-  }
-
-  if (pwmRL_out >= 0) { digitalWrite(IN3_R,HIGH); digitalWrite(IN4_R,LOW); }
-  else { digitalWrite(IN3_R,LOW); digitalWrite(IN4_R,HIGH); pwmRL_out = -pwmRL_out; }
-  analogWrite(ENA_R, pwmRL_out);
-
-  if (pwmRR_out >= 0) { digitalWrite(IN1_R,HIGH); digitalWrite(IN2_R,LOW); }
-  else { digitalWrite(IN1_R,LOW); digitalWrite(IN2_R,HIGH); pwmRR_out = -pwmRR_out; }
-  analogWrite(ENB_R, pwmRR_out);
 }
 
 // ------------------- Encoder ISRs -------------------
