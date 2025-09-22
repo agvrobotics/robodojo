@@ -26,6 +26,7 @@ setup(
     entry_points={
         'console_scripts': [
             'odom_publisher = bringup.odom_publisher:main',
+            'slip_detector = bringup.slip_detector:main',
         ],
     },
 )
