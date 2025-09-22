@@ -63,6 +63,7 @@ class SlipDetector(Node):
             self.last_scan_range = range_val
             self.last_odom_x = None
             self.last_odom_y = None
+            self.odom_move = 0.0
 
 
 def main(args=None):
