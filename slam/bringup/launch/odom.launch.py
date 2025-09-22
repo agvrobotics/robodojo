@@ -4,7 +4,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='odom_pub',
+            package='bringup',
             executable='odom_publisher',
             name='odom_publisher',
             output='screen'
