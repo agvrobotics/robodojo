@@ -44,11 +44,14 @@ class SlipDetector(Node):
     def scan_cb(self, msg: LaserScan):
         # Compute the index for the desired angle
         angle_rad = math.radians(self.angle_deg)
-        idx = int((angle_rad - msg.angle_min) / msg.angle_increment)
+        idx = round((angle_rad - msg.angle_min) / msg.angle_increment)
         if idx < 0 or idx >= len(msg.ranges):
             return  # angle out of scan range
 
         range_val = msg.ranges[idx]
+
+        if not math.isfinite(range_val):
+            return
 
         if self.last_scan_range is None or self.last_odom_x is None:
             self.last_scan_range = range_val
