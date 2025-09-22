@@ -46,4 +46,4 @@ source install/setup.bash
 ros2 launch bringup nav2.launch.py
 
 ros2 launch nav2_bringup localization_launch.py map:=/home/sierra-95/Documents/robodojo/slam/bringup.yaml use_sim_time:=false
-ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true
+ros2 launch nav2_bringup navigation_launch.py params_file:=/home/sierra-95/Documents/robodojo/slam/bringup/params/nav2_params.yaml use_sim_time:=false
