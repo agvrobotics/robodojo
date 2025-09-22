@@ -25,7 +25,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'odom_publisher = odom_pub.odom_publisher:main',
+            'odom_publisher = bringup.odom_publisher:main',
         ],
     },
 )
