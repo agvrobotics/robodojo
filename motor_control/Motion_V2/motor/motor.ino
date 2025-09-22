@@ -39,6 +39,20 @@ volatile long countRR = 0;
 unsigned long lastReport = 0;
 const unsigned long reportInterval = 20; // 50 Hz
 
+//-------Car params----------------
+const float WHEEL_RADIUS = 0.0425; 
+//wheelbase is the distance between the left and right wheel contact points
+const float WHEEL_BASE = 0.2325;
+const float COUNTS_PER_REV = 4096.0;
+
+// ---- PID constants ----
+float Kp = 0.6, Ki = 0.02, Kd = 0.01;
+float integRL = 0, integRR = 0;
+float lastErrRL = 0, lastErrRR = 0;
+long  lastCountRL = 0, lastCountRR = 0;
+volatile float targetTicksRL = 0, targetTicksRR = 0;
+volatile int basePWM_RL = 0, basePWM_RR = 0;
+
 void setup() {
   // Motor pins
   pinMode(ENA_F, OUTPUT); pinMode(ENB_F, OUTPUT);
@@ -87,10 +101,8 @@ void loop() {
 
 // ------------------- Convert cmd_vel to PWM -------------------
 void setMotorPWM(float linear, float angular) {
-  //wheelbase is the distance between the left and right wheel contact points
-  const float WHEEL_BASE = 0.2325;
+  
   const int MAX_PWM = 255;
-
   const float MAX_LINEAR  = 0.425;   // measured m/s
   const float MAX_ANGULAR = 2.99;    // measured rad/s
 
