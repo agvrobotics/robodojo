@@ -37,7 +37,7 @@ volatile long countRR = 0;
 
 // ------------------- Timing -------------------
 unsigned long lastReport = 0;
-const unsigned long reportInterval = 20; // 50 Hz
+const unsigned long reportInterval = 50;
 
 void setup() {
   // Motor pins
