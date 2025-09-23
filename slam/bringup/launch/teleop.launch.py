@@ -24,7 +24,8 @@ def generate_launch_description():
                 'enable_turbo_button': 5,
                 'scale_linear_turbo.x': 0.425, #Linear with turbo
                 'scale_angular_turbo.yaw': 2.99 #Angular with turbo
-            }]
+            }],
+            remappings=[('/cmd_vel', '/joy_vel')]
         ),
         Node(
             package='twist_mux',
@@ -33,6 +34,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 '/home/sierra-95/Documents/robodojo/slam/bringup/params/twist_mux_topics.yaml'                      
-            }]
+            }],
+            remappings=[('/cmd_vel_out', '/cmd_vel')]
         )
     ])
