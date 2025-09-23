@@ -11,9 +11,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', [
-            'launch/nav2.launch.py',
             'launch/slam.launch.py',
-            'launch/odom.launch.py',
+            'launch/pi.launch.py',
         ]),
     ],
     install_requires=['setuptools'],
@@ -27,6 +26,7 @@ setup(
         'console_scripts': [
             'odom_publisher = bringup.odom_publisher:main',
             'slip_detector = bringup.slip_detector:main',
+            'serial_node = bringup.serial_node:main',
         ],
     },
 )
