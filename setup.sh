@@ -10,10 +10,10 @@ source install/setup.bash
 ros2 launch rplidar_ros rplidar_a1_launch.py serial_port:=/dev/ttyUSB0 serial_baudrate:=115200 frame_id:=lidar_link_1
 
 ##########OLD TELEOP###############
-cd ~/robodojo/motor_control/Motion_V2/ros_ws
+cd ~/robodojo/slam
 tmux new -s teleop
 source install/setup.bash
-ros2 run agv_control keyboard_teleop
+ros2 run bringup keyboard_teleop
 ##################################
 
 

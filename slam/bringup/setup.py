@@ -12,7 +12,8 @@ setup(
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', [
             'launch/slam.launch.py',
-            'launch/pi.launch.py',
+            'launch/bringup.launch.py',
+            'launch/teleop.launch.py'
         ]),
     ],
     install_requires=['setuptools'],
@@ -27,6 +28,7 @@ setup(
             'odom_publisher = bringup.odom_publisher:main',
             'slip_detector = bringup.slip_detector:main',
             'serial_node = bringup.serial_node:main',
+            'keyboard_teleop = bringup.keyboard_teleop:main',
         ],
     },
 )
