@@ -26,4 +26,13 @@ def generate_launch_description():
                 'scale_angular_turbo.yaw': 2.99 #Angular with turbo
             }]
         ),
+        Node(
+            package='twist_mux',
+            executable='twist_mux',
+            name='twist_mux',
+            output='screen',
+            parameters=[{
+                '/home/sierra-95/Documents/robodojo/slam/bringup/params/twist_mux_topics.yaml'                      
+            }]
+        )
     ])
