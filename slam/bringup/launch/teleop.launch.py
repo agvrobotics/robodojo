@@ -17,13 +17,13 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 'axis_linear.x': 1,
-                'scale_linear.x': 0.4,
+                'scale_linear.x': 0.25,
                 'axis_angular.yaw': 0,
-                'scale_angular.yaw': 2.99,
+                'scale_angular.yaw': 1.9,
                 'enable_button': 4,
                 'enable_turbo_button': 5,
-                'scale_linear_turbo.x': 0.425,
-                'scale_angular_turbo.yaw': 2.99
+                'scale_linear_turbo.x': 0.425, #Linear with turbo
+                'scale_angular_turbo.yaw': 2.99 #Angular with turbo
             }]
         ),
     ])
