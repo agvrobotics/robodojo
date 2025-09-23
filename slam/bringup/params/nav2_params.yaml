@@ -263,7 +263,7 @@ map_server:
     use_sim_time: True
     # Overridden in launch by the "map" launch configuration or provided default value.
     # To use in yaml, remove the default "map" value in the tb3_simulation_launch.py file & provide full path to map below.
-    yaml_filename: "/home/sierra-95/maps/my_map.yaml"
+    yaml_filename: ""
 
 map_saver:
   ros__parameters:
@@ -315,8 +315,8 @@ behavior_server:
     transform_tolerance: 0.1
     use_sim_time: true
     simulate_ahead_time: 2.0
-    max_rotational_vel: 2.2
-    min_rotational_vel: 1.9
+    max_rotational_vel: 1.0
+    min_rotational_vel: 0.4
     rotational_acc_lim: 3.2
 
 robot_state_publisher:
