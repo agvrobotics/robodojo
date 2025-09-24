@@ -28,7 +28,7 @@ ros2 run tf2_tools view_frames
 
 #### NAV2 #########################
 ros2 launch nav2_bringup localization_launch.py map:=/home/sierra-95/Documents/robodojo/slam/bringup.yaml use_sim_time:=false
-ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true param_file:=/home/sierra-95/Documents/robodojo/slam/nav2_params.yaml
 
 #####LOADING A MAP#####
 #METHOD 1: using slamtoolbox Edit mapper_params_online_async.yaml
