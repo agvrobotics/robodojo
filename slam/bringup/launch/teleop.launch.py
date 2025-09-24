@@ -32,8 +32,8 @@ def generate_launch_description():
             executable='twist_mux',
             name='twist_mux',
             output='screen',
-            parameters=[{
+            parameters=[
                 '/home/sierra-95/Documents/robodojo/slam/bringup/params/twist_mux_topics.yaml'                      
-            }],
+            ],
         )
     ])
