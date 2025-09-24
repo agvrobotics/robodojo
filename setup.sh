@@ -26,10 +26,6 @@ ros2 launch bringup slam.launch.py
 ##--------------confirm tree structure----------------##
 ros2 run tf2_tools view_frames
 
-#### NAV2 #########################
-ros2 launch nav2_bringup localization_launch.py map:=/home/sierra-95/Documents/robodojo/slam/bringup.yaml use_sim_time:=false
-ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true param_file:=/home/sierra-95/Documents/robodojo/slam/nav2_params.yaml
-
 #####LOADING A MAP#####
 #METHOD 1: using slamtoolbox Edit mapper_params_online_async.yaml
 #--> Note articulated robotics says use localization.launch.py not online_async_launch.py during localization
@@ -46,3 +42,9 @@ ros2 run nav2_amcl amcl
 ros2 param list /amcl
 ros2 param get /amcl base_frame_id
 ros2 param set /amcl base_frame_id base_link
+
+#METHOD 3: using nav2_bringup
+ros2 launch nav2_bringup localization_launch.py map:=/home/sierra-95/Documents/robodojo/slam/bringup.yaml use_sim_time:=false
+fixed_frame: "map"
+ros2 param set /amcl base_frame_id base_link
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true params_file:=/home/sierra-95/Documents/robodojo/slam/bringup/params/nav2_params.yaml
