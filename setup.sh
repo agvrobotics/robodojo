@@ -9,19 +9,14 @@ tmux new -s rplidar
 source install/setup.bash
 ros2 launch rplidar_ros rplidar_a1_launch.py serial_port:=/dev/ttyUSB0 serial_baudrate:=115200 frame_id:=lidar_link_1
 
-##########OLD TELEOP###############
-cd ~/robodojo/slam
-tmux new -s teleop
-source install/setup.bash
-ros2 run bringup keyboard_teleop
-##################################
-
-
 ##################On PC###########################
 cd ~/Documents/robodojo/slam
 source install/setup.bash
 ros2 launch dekut_amr_description display.launch.py
-ros2 launch bringup slam.launch.py
+
+cd ~/Documents/robodojo/slam
+source install/setup.bash
+ros2 launch bringup slam.async.launch.py
 
 ##--------------confirm tree structure----------------##
 ros2 run tf2_tools view_frames
