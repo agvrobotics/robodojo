@@ -32,6 +32,7 @@ ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_
 
 #####LOADING A MAP#####
 #METHOD 1: using slamtoolbox Edit mapper_params_online_async.yaml
+#--> Note articulated robotics says use localization.launch.py not online_async_launch.py during localization
 mode: localization
 map_file_name: /home/sierra-95/Documents/robodojo/slam/michael_serialize
 map_start_at_dock: true
