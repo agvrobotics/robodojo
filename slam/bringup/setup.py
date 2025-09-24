@@ -11,7 +11,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', [
-            'launch/slam.launch.py',
+            'launch/slam.async.launch.py',
+            'launch/slam.localization.launch.py',
             'launch/bringup.launch.py',
             'launch/teleop.launch.py'
         ]),

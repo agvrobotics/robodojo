@@ -27,11 +27,8 @@ ros2 launch bringup slam.launch.py
 ros2 run tf2_tools view_frames
 
 #####LOADING A MAP#####
-#METHOD 1: using slamtoolbox Edit mapper_params_online_async.yaml
-#--> Note articulated robotics says use localization.launch.py not online_async_launch.py during localization
-mode: localization
-map_file_name: /home/sierra-95/Documents/robodojo/slam/michael_serialize
-map_start_at_dock: true
+#METHOD 1: using slamtoolbox in localization mode
+ros2 launch bringup slam.localization.launch.py
 
 #METHOD 2: using map server
 #This method is unreliable, sometimes it works, sometimes it doesn't -> set durability in topic to transient local
