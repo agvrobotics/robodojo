@@ -35,6 +35,5 @@ def generate_launch_description():
             parameters=[{
                 '/home/sierra-95/Documents/robodojo/slam/bringup/params/twist_mux_topics.yaml'                      
             }],
-            remappings=[('/cmd_vel_out', '/cmd_vel')]
         )
     ])

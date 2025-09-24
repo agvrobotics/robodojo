@@ -7,7 +7,7 @@ import sys, tty, termios, select
 class KeyboardTeleop(Node):
     def __init__(self):
         super().__init__('keyboard_teleop')
-        self.pub = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.pub = self.create_publisher(Twist, 'key_vel', 10)
 
         self.linear_speed = 0.25  # m/s
         self.angular_speed = 1.9  # rad/s

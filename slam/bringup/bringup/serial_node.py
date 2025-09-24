@@ -27,7 +27,7 @@ class SerialCmdNode(Node):
         self.ser = ser
         self.lock = lock
         self.subscription = self.create_subscription(
-            Twist, 'cmd_vel', self.cmd_vel_callback, 10
+            Twist, 'cmd_vel_out', self.cmd_vel_callback, 10
         )
         self.get_logger().info("Serial cmd_vel ready")
 
