@@ -295,7 +295,7 @@ smoother_server:
       do_refinement: True
 
 behavior_server:
-  ros__parameters:drive_on_heading.acceleration_limit
+  ros__parameters:
     costmap_topic: local_costmap/costmap_raw
     footprint_topic: local_costmap/published_footprint
     cycle_frequency: 10.0
