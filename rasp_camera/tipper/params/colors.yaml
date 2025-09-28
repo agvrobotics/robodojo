@@ -1,0 +1,16 @@
+red:
+  # Bright indoor / normal daylight
+  - [0,   100, 70, 10, 255, 255]
+  # Deep red / shadowed
+  - [170, 100, 50, 180, 255, 255]
+  # Extra low-light tolerance
+  - [0,   70,  40, 10, 255, 255]
+  - [170, 70,  40, 180,255, 255]
+
+blue:
+  # Standard blue daylight
+  - [90,  80, 70, 130,255,255]
+  # Deep blue / dim indoor
+  - [85,  60, 60, 140,255,255]
+  # Cool white LED lighting
+  - [95,  50, 50, 125,255,255]

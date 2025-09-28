@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'camera_pkg'
+package_name = 'tipper'
 
 setup(
     name=package_name,
@@ -10,10 +10,6 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/launch', [
-            'launch/camera_publisher.launch.py',
-            'launch/camera_subscriber.launch.py',
-        ]),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -21,11 +17,14 @@ setup(
     maintainer_email='michaelmachohi@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
-    tests_require=['pytest'],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
     entry_points={
         'console_scripts': [
-            'camera_publisher = camera_pkg.camera_publisher:main',
-            'camera_subscriber = camera_pkg.camera_subscriber:main',
+            'color_detector = tipper.color_detector:main',
         ],
     },
 )
