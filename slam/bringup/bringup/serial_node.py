@@ -90,6 +90,7 @@ class TipperNode(Node):
 
     def tipper_callback(self, msg: String):
         color = msg.data
+        self.get_logger().info(f"Tipper command received: {color}")
         with self.lock:
             self.ser.write(b'T')
 
