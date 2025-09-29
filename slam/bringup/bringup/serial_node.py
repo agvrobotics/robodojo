@@ -89,8 +89,7 @@ class TipperNode(Node):
         self.get_logger().info("Tipper node ready")
 
     def tipper_callback(self, msg: String):
-        value = msg.data.strip()   # Expecting "0" or "1"
-        self.get_logger().info(f"Tipper trigger: {value}")
+        value = msg.data.strip()
         with self.lock:
             cmd_str = f"TIP,{value}\n"
             self.ser.write(cmd_str.encode('utf-8'))
