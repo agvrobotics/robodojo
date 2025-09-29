@@ -3,10 +3,10 @@
 Servo tipper;
 const int servoPin = 9;
 const int stepSize = 2;    // degrees per step (smaller = smoother, but slower)
-const int stepDelay = 20;  // ms delay between steps
+const int stepDelay = 10;  // ms delay between steps
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   tipper.attach(servoPin);
   tipper.write(0);
 }

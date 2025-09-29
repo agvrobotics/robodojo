@@ -52,7 +52,6 @@ class ColorDetector(Node):
         if (cv2.countNonZero(red_mask) > 5000 or cv2.countNonZero(blue_mask) > 5000) \
             and (now - self.last_trigger_time) > self.cooldown:
             color = "Red" if cv2.countNonZero(red_mask) > 5000 else "Blue"
-            self.get_logger().info(f"{color} detected → publishing /tipper_cmd")
             msg = String()
             msg.data = color
             self.pub.publish(msg)
