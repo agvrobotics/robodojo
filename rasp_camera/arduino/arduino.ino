@@ -8,7 +8,7 @@ const int stepDelay = 10;  // ms delay between steps
 void setup() {
   Serial.begin(115200);
   tipper.attach(servoPin);
-  tipper.write(0);
+  tipper.write(0); // start down
 }
 
 void smoothMove(int fromAngle, int toAngle) {
@@ -30,10 +30,11 @@ void loop() {
       int commaIndex = cmd.indexOf(',');
       if (commaIndex > 0) {
         int action = cmd.substring(commaIndex + 1).toInt();
+        int current = tipper.read(); // current position for smooth transition
         if (action == 1) {
-          smoothMove(0, 180);
-          delay(3000);
-          smoothMove(180, 0);
+          smoothMove(current, 180);
+        } else if (action == 0) {
+          smoothMove(current, 0);
         }
       }
     }

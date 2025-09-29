@@ -30,6 +30,7 @@ setup(
             'slip_detector = bringup.slip_detector:main',
             'serial_node = bringup.serial_node:main',
             'keyboard_teleop = bringup.keyboard_teleop:main',
+            'tipper_joy = bringup.tipper_joy:main',
         ],
     },
 )

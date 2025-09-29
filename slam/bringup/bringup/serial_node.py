@@ -89,10 +89,12 @@ class TipperNode(Node):
         self.get_logger().info("Tipper node ready")
 
     def tipper_callback(self, msg: String):
-        color = msg.data
-        self.get_logger().info(f"Tipper trigger: {color}")
+        value = msg.data.strip()   # Expecting "0" or "1"
+        self.get_logger().info(f"Tipper trigger: {value}")
         with self.lock:
-            self.ser.write(b'TIP,1\n')
+            cmd_str = f"TIP,{value}\n"
+            self.ser.write(cmd_str.encode('utf-8'))
+
 
 def main(args=None):
     rclpy.init(args=args)

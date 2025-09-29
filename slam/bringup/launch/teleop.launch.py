@@ -35,5 +35,11 @@ def generate_launch_description():
             parameters=[
                 '/home/sierra-95/Documents/robodojo/slam/bringup/params/twist_mux_topics.yaml'                      
             ],
-        )
+        ),
+        Node(
+            package='bringup',
+            executable='tipper_joy',
+            name='tipper_joy',
+            output='screen'
+        ),
     ])
