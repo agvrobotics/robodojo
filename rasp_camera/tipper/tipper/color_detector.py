@@ -66,3 +66,13 @@ class ColorDetector(Node):
         self.cap.release()
         cv2.destroyAllWindows()
         super().destroy_node()
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = ColorDetector()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
