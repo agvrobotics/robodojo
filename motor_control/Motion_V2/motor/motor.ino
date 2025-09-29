@@ -1,4 +1,3 @@
-#include <Servo.h>
 // ------------------- Encoder pins -------------------
 // Front Right
 #define ENCA_FR 2   // Green
@@ -40,16 +39,7 @@ volatile long countRR = 0;
 unsigned long lastReport = 0;
 const unsigned long reportInterval = 50;
 
-//----------------Tipper-----------------
-Servo tipper;
-const int servoPin = 9;
-const int stepSize = 2;    // degrees per step (smaller = smoother, but slower)
-const int stepDelay = 10;  // ms delay between steps
-
 void setup() {
-
-  tipper.attach(servoPin);
-  tipper.write(0);
   // Motor pins
   pinMode(ENA_F, OUTPUT); pinMode(ENB_F, OUTPUT);
   pinMode(IN1_F, OUTPUT); pinMode(IN2_F, OUTPUT);
@@ -71,30 +61,18 @@ void setup() {
   Serial.begin(115200);
 }
 
+// ------------------- Main loop -------------------
 void loop() {
   if (Serial.available()) {
     String cmd = Serial.readStringUntil('\n');
     cmd.trim();
+    float linear = 0, angular = 0;
 
-    if (cmd.startsWith("VEL,")) {
-      // Remove the "VEL," prefix
-      String payload = cmd.substring(4);
-      int commaIndex = payload.indexOf(',');
-      if (commaIndex > 0) {
-        float linear  = payload.substring(0, commaIndex).toFloat();
-        float angular = payload.substring(commaIndex + 1).toFloat();
-        setMotorPWM(linear, angular);
-      }
-    } else if (cmd.startsWith("TIP,")) {
-      int commaIndex = cmd.indexOf(',');
-      if (commaIndex > 0) {
-        int action = cmd.substring(commaIndex + 1).toInt();
-        if (action == 1) {
-          smoothMove(0, 180);
-          delay(3000);
-          smoothMove(180, 0);
-        }
-      }
+    int commaIndex = cmd.indexOf(',');
+    if (commaIndex > 0) {
+      linear = cmd.substring(0, commaIndex).toFloat();
+      angular = cmd.substring(commaIndex + 1).toFloat();
+      setMotorPWM(linear, angular);
     }
   }
   // Report encoder counts at fixed rate
@@ -158,15 +136,6 @@ void setMotorPWM(float linear, float angular) {
   else { digitalWrite(IN1_R,LOW); digitalWrite(IN2_R,HIGH); pwmRR = -pwmRR; }
   analogWrite(ENB_R, pwmRR);
 
-}
-
-void smoothMove(int fromAngle, int toAngle) {
-  int dir = (toAngle > fromAngle) ? 1 : -1;
-  for (int pos = fromAngle; pos != toAngle; pos += dir * stepSize) {
-    tipper.write(pos);
-    delay(stepDelay);
-  }
-  tipper.write(toAngle);
 }
 
 // ------------------- Encoder ISRs -------------------

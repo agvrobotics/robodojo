@@ -17,11 +17,14 @@ class ColorDetector(Node):
         # Camera
         self.cap = cv2.VideoCapture('/dev/video0')
 
-        # ROS pub
+        # ROS publisher
         self.pub = self.create_publisher(String, '/tipper_cmd', 10)
 
-        self.last_trigger_time = 0.0
-        self.cooldown = 5.0
+        # Timing
+        self.last_trigger_time = 0.0       # time of last 1 message
+        self.cooldown = 5.0                # min time between new triggers
+        self.pending_close_time = None     # when to send 0
+
         self.timer = self.create_timer(0.1, self.process_frame)
 
     def detect_color(self, hsv, ranges):
@@ -49,13 +52,18 @@ class ColorDetector(Node):
         blue_mask = self.detect_color(hsv, self.blue_ranges)
 
         now = time.time()
-        if (cv2.countNonZero(red_mask) > 5000 or cv2.countNonZero(blue_mask) > 5000) \
-            and (now - self.last_trigger_time) > self.cooldown:
-            color = "Red" if cv2.countNonZero(red_mask) > 5000 else "Blue"
-            msg = String()
-            msg.data = color
-            self.pub.publish(msg)
-            self.last_trigger_time = now
+
+        # ---- Detect color and send "1" ----
+        if (cv2.countNonZero(red_mask) > 5000 or cv2.countNonZero(blue_mask) > 5000):
+            if (now - self.last_trigger_time) > self.cooldown:
+                self.pub.publish(String(data="1"))
+                self.last_trigger_time = now
+                self.pending_close_time = now + 3.0  # schedule close after 3 seconds
+
+        # ---- If 3 seconds passed, send "0" ----
+        if self.pending_close_time and now >= self.pending_close_time:
+            self.pub.publish(String(data="0"))
+            self.pending_close_time = None
 
         cv2.imshow("Camera View", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -66,12 +74,14 @@ class ColorDetector(Node):
         cv2.destroyAllWindows()
         super().destroy_node()
 
+
 def main(args=None):
     rclpy.init(args=args)
     node = ColorDetector()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()

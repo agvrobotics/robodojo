@@ -10,8 +10,8 @@ class TipperJoy(Node):
         self.pub = self.create_publisher(String, '/tipper_cmd', 10)
         self.sub = self.create_subscription(Joy, '/joy', self.joy_callback, 10)
 
-        self.btn_Y = 3  # Y 
-        self.btn_A = 0  # A 
+        self.btn_Y = 0  # Y 
+        self.btn_A = 2  # A 
 
         # Track last state to avoid spamming
         self.last_Y = 0
