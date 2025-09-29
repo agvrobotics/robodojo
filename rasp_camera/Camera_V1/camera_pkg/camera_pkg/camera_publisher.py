@@ -14,7 +14,7 @@ class CameraPublisher(Node):
         self.timer = self.create_timer(1/30, self.timer_callback)  # ~0.033 s
 
         # Open default camera
-        self.cap = cv2.VideoCapture("/dev/video0", cv2.CAP_V4L2)
+        self.cap = cv2.VideoCapture(0)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.cap.set(cv2.CAP_PROP_FPS, 30)
