@@ -78,17 +78,34 @@ class SerialFeedbackNode(Node):
             except Exception as e:
                 self.get_logger().warn(f"Serial read error: {e}")
 
+class TipperNode(Node):
+    def __init__(self, ser, lock):
+        super().__init__('tipper_node')
+        self.ser = ser
+        self.lock = lock
+        self.subscription = self.create_subscription(
+            String, '/tipper_cmd', self.tipper_callback, 10
+        )
+        self.get_logger().info("Tipper node ready")
+
+    def tipper_callback(self, msg: String):
+        color = msg.data
+        with self.lock:
+            self.ser.write(b'T')
+
 def main(args=None):
     rclpy.init(args=args)
 
     manager = SerialManager()
     cmd_node = SerialCmdNode(manager.ser, manager.lock)
     feedback_node = SerialFeedbackNode(manager.ser, manager.lock)
+    tipper_node = TipperNode(manager.ser, manager.lock)
 
     executor = rclpy.executors.MultiThreadedExecutor()
     executor.add_node(manager)
     executor.add_node(cmd_node)
     executor.add_node(feedback_node)
+    executor.add_node(tipper_node)
 
     try:
         executor.spin()
@@ -100,6 +117,7 @@ def main(args=None):
         cmd_node.destroy_node()
         feedback_node.destroy_node()
         manager.destroy_node()
+        tipper_node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()
 
