@@ -34,7 +34,7 @@ class SerialCmdNode(Node):
     def cmd_vel_callback(self, msg: Twist):
         linear = msg.linear.x
         angular = msg.angular.z
-        cmd_str = f"{linear},{angular}\n"
+        cmd_str = f"VEL,{linear},{angular}\n"
         # self.get_logger().info(f"TX -> {cmd_str.strip()}")
         with self.lock:
             self.ser.write(cmd_str.encode('utf-8')) 
@@ -92,7 +92,7 @@ class TipperNode(Node):
         color = msg.data
         self.get_logger().info(f"Tipper trigger: {color}")
         with self.lock:
-            self.ser.write(b'T')
+            self.ser.write(b'TIP,1\n')
 
 def main(args=None):
     rclpy.init(args=args)

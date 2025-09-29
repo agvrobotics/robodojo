@@ -21,12 +21,21 @@ void smoothMove(int fromAngle, int toAngle) {
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    char cmd = Serial.read();
-    if (cmd == 'T') {
-      smoothMove(0, 180);
-      delay(3000);
-      smoothMove(180, 0);
+  if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+
+    // Check for TIP command
+    if (cmd.startsWith("TIP,")) {
+      int commaIndex = cmd.indexOf(',');
+      if (commaIndex > 0) {
+        int action = cmd.substring(commaIndex + 1).toInt();
+        if (action == 1) {
+          smoothMove(0, 180);
+          delay(3000);
+          smoothMove(180, 0);
+        }
+      }
     }
   }
 }
