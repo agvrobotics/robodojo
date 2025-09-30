@@ -1,9 +1,9 @@
 __pycache__/
 *.pyc
 
-rasp_camera/Camera_V1/build
-rasp_camera/Camera_V1/install
-rasp_camera/Camera_V1/log
+rasp_camera/camera/build
+rasp_camera/camera/install
+rasp_camera/camera/log
 
 rasp_camera/tipper/build
 rasp_camera/tipper/install

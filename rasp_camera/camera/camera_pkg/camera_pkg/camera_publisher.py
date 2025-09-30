@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
 import cv2
-import numpy as np
 
 class CameraPublisher(Node):
     def __init__(self):
         super().__init__('camera_publisher')
-        self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', 20)  # increased queue size
+        self.publisher_ = self.create_publisher(Image, 'camera/image_raw', 10)
+        self.bridge = CvBridge()
 
-        # Timer for 30 FPS
-        self.timer = self.create_timer(1/30, self.timer_callback)  # ~0.033 s
+        # Timer for ~30 FPS
+        self.timer = self.create_timer(1/30, self.timer_callback)
 
-        # Open default camera
         self.cap = cv2.VideoCapture(0)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -28,22 +28,20 @@ class CameraPublisher(Node):
             self.get_logger().error('Failed to capture image')
             return
 
-        # Encode frame as JPEG
-        _, buffer = cv2.imencode('.jpg', frame)
-
-        msg = CompressedImage()
+        # Convert OpenCV frame (BGR) to ROS Image message
+        msg = self.bridge.cv2_to_imgmsg(frame, encoding="bgr8")
         msg.header.stamp = self.get_clock().now().to_msg()
-        msg.format = "jpeg"
-        msg.data = np.array(buffer).tobytes()
 
         self.publisher_.publish(msg)
-        # self.get_logger().info('Publishing compressed image')  # comment out to reduce log spam
+
+    def destroy_node(self):
+        self.cap.release()
+        super().destroy_node()
 
 def main(args=None):
     rclpy.init(args=args)
     node = CameraPublisher()
     rclpy.spin(node)
-    node.cap.release()
     node.destroy_node()
     rclpy.shutdown()
 
