@@ -1,3 +1,4 @@
+#include <Servo.h>
 // ------------------- Encoder pins -------------------
 // Front Right
 #define ENCA_FR 2   // Green
@@ -29,6 +30,14 @@
 #define IN3_R 28
 #define IN4_R 29
 
+//--------------------Tipper Setup--------------------
+Servo tipper;
+const int servoPin = 9;
+const int stepSize = 2;
+const int stepDelay = 10; 
+int targetAngle = 0;
+int currentAngle = 0;
+unsigned long lastStepTime = 0;
 
 // ------------------- Encoder counters -------------------
 volatile long countFR = 0;
@@ -58,23 +67,41 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(ENCA_RR), readEncoderRR_A, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ENCB_RR), readEncoderRR_B, CHANGE);
 
+  // Servo pins
+  tipper.attach(servoPin);
+  tipper.write(0); 
+
   Serial.begin(115200);
 }
 
 // ------------------- Main loop -------------------
 void loop() {
+  char buffer[32];
   if (Serial.available()) {
-    String cmd = Serial.readStringUntil('\n');
-    cmd.trim();
-    float linear = 0, angular = 0;
+    int len = Serial.readBytesUntil('\n', buffer, sizeof(buffer) - 1);
+    if (len > 0) {
+      buffer[len] = '\0'; // null terminate
 
-    int commaIndex = cmd.indexOf(',');
-    if (commaIndex > 0) {
-      linear = cmd.substring(0, commaIndex).toFloat();
-      angular = cmd.substring(commaIndex + 1).toFloat();
-      setMotorPWM(linear, angular);
+      if (strncmp(buffer, "VEL,", 4) == 0) {
+        char *p = strtok(buffer + 4, ",");
+        if (p) {
+          float linear = atof(p);
+          p = strtok(NULL, ",");
+          if (p) {
+            float angular = atof(p);
+            setMotorPWM(linear, angular);
+          }
+        }
+      }
+      else if (strncmp(buffer, "TIP,", 4) == 0) {
+        int action = atoi(buffer + 4);
+        if (action == 1) targetAngle = 50;
+        else if (action == 0) targetAngle = 0;
+      }
     }
   }
+
+  updateServo();
   // Report encoder counts at fixed rate
   if (millis() - lastReport >= reportInterval) {
     lastReport = millis();
@@ -136,6 +163,24 @@ void setMotorPWM(float linear, float angular) {
   else { digitalWrite(IN1_R,LOW); digitalWrite(IN2_R,HIGH); pwmRR = -pwmRR; }
   analogWrite(ENB_R, pwmRR);
 
+}
+
+void updateServo() {
+  unsigned long now = millis();
+  if (now - lastStepTime >= stepDelay) {
+    lastStepTime = now;
+
+    if (currentAngle < targetAngle) {
+      currentAngle += stepSize;
+      if (currentAngle > targetAngle) currentAngle = targetAngle;
+      tipper.write(currentAngle);
+    }
+    else if (currentAngle > targetAngle) {
+      currentAngle -= stepSize;
+      if (currentAngle < targetAngle) currentAngle = targetAngle;
+      tipper.write(currentAngle);
+    }
+  }
 }
 
 // ------------------- Encoder ISRs -------------------
