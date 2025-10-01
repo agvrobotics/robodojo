@@ -2,22 +2,16 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import CompressedImage
-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import cv2
 import numpy as np
 
 class CameraPublisher(Node):
     def __init__(self):
         super().__init__('camera_publisher')
-        qos = QoSProfile(
-            reliability=ReliabilityPolicy.BEST_EFFORT,
-            history=HistoryPolicy.KEEP_LAST,
-            depth=1
-        )
-        self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', qos)
+        self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', 10)
 
         # Timer for 30 FPS
-        self.timer = self.create_timer(0.1, self.timer_callback)  # was 1/30
+        self.timer = self.create_timer(1/30, self.timer_callback)  # ~0.033 s
 
         # Open default camera
         self.cap = cv2.VideoCapture(0)
