@@ -2,13 +2,19 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import CompressedImage
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import cv2
 import numpy as np
 
 class CameraPublisher(Node):
     def __init__(self):
         super().__init__('camera_publisher')
-        self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', 20)  # increased queue size
+        qos = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1
+        )
+        self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', qos)
 
         # Timer for 30 FPS
         self.timer = self.create_timer(1/30, self.timer_callback)  # ~0.033 s
