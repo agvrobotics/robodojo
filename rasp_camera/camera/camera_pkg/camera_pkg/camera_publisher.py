@@ -17,7 +17,7 @@ class CameraPublisher(Node):
         self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', qos)
 
         # Timer for 30 FPS
-        self.timer = self.create_timer(1/30, self.timer_callback)  # ~0.033 s
+        self.timer = self.create_timer(0.1, self.timer_callback)  # was 1/30
 
         # Open default camera
         self.cap = cv2.VideoCapture(0)
