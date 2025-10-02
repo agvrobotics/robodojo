@@ -10,14 +10,13 @@ class CameraPublisher(Node):
         super().__init__('camera_publisher')
         self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', 10)
 
-        # Timer for 30 FPS
-        self.timer = self.create_timer(1/30, self.timer_callback)  # ~0.033 s
+        # Timer for 10 FPS
+        self.timer = self.create_timer(1/10, self.timer_callback)
 
-        # Open default camera
-        self.cap = cv2.VideoCapture(0)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        self.cap.set(cv2.CAP_PROP_FPS, 30)
+        self.cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 416) 
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 416)
+        self.cap.set(cv2.CAP_PROP_FPS, 10)
 
         if not self.cap.isOpened():
             self.get_logger().error('Could not open camera')
@@ -28,16 +27,18 @@ class CameraPublisher(Node):
             self.get_logger().error('Failed to capture image')
             return
 
-        # Encode frame as JPEG
-        _, buffer = cv2.imencode('.jpg', frame)
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 80]
+        success, buffer = cv2.imencode('.jpg', frame, encode_param)
+        if not success:
+            self.get_logger().error('Failed to encode image')
+            return
 
         msg = CompressedImage()
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.format = "jpeg"
-        msg.data = np.array(buffer).tobytes()
+        msg.data = buffer.tobytes()
 
         self.publisher_.publish(msg)
-        # self.get_logger().info('Publishing compressed image')  # comment out to reduce log spam
 
 def main(args=None):
     rclpy.init(args=args)
