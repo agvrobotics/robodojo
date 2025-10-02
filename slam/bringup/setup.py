@@ -32,6 +32,7 @@ setup(
             'keyboard_teleop = bringup.keyboard_teleop:main',
             'tipper_joy = bringup.tipper_joy:main',
             'camera_publisher = bringup.camera_publisher:main',
+            'camera_subscriber = bringup.camera_subscriber:main',
         ],
     },
 )

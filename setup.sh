@@ -22,6 +22,11 @@ cd ~/Documents/robodojo/slam
 source install/setup.bash
 ros2 launch bringup slam.async.launch.py
 
+#others
+cd ~/Documents/robodojo/slam
+source install/setup.bash
+ros2 run bringup camera_subscriber
+
 ##--------------confirm tree structure----------------##
 ros2 run tf2_tools view_frames
 
