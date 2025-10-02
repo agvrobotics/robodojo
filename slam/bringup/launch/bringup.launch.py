@@ -17,9 +17,4 @@ def generate_launch_description():
             executable='odom_publisher',
             output='screen'
         ),
-        Node(
-            package='bringup',
-            executable='camera_publisher',
-            output='screen'
-        )
     ])
