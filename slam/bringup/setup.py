@@ -27,12 +27,10 @@ setup(
     entry_points={
         'console_scripts': [
             'odom_publisher = bringup.odom_publisher:main',
-            'slip_detector = bringup.slip_detector:main',
             'serial_node = bringup.serial_node:main',
             'keyboard_teleop = bringup.keyboard_teleop:main',
             'tipper_joy = bringup.tipper_joy:main',
             'camera_publisher = bringup.camera_publisher:main',
-            'camera_subscriber = bringup.camera_subscriber:main',
         ],
     },
 )
