@@ -19,11 +19,6 @@ def generate_launch_description():
         ),
         Node(
             package='bringup',
-            executable='slip_detector',
-            output='screen'
-        ),
-        Node(
-            package='bringup',
             executable='camera_publisher',
             output='screen'
         )
