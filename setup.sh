@@ -12,6 +12,10 @@ ros2 launch rplidar_ros rplidar_a1_launch.py serial_port:=/dev/ttyUSB0 serial_ba
 ##################On PC###########################
 cd ~/Documents/robodojo/slam
 source install/setup.bash
+ros2 launch bringup teleop.launch.py
+
+cd ~/Documents/robodojo/slam
+source install/setup.bash
 ros2 launch dekut_amr_description display.launch.py
 
 cd ~/Documents/robodojo/slam
