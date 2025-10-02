@@ -21,5 +21,10 @@ def generate_launch_description():
             package='bringup',
             executable='slip_detector',
             output='screen'
+        ),
+        Node(
+            package='bringup',
+            executable='camera_publisher',
+            output='screen'
         )
     ])

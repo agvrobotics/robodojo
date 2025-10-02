@@ -7,7 +7,7 @@ ros2 launch bringup bringup.launch.py
 cd ~/slam1/ros2_ws
 tmux new -s rplidar
 source install/setup.bash
-ros2 launch rplidar_ros rplidar_a1_launch.py serial_port:=/dev/ttyUSB0 serial_baudrate:=115200 frame_id:=lidar_link_1
+ros2 launch rplidar_ros rplidar_a1_launch.py serial_port:=/dev/ttyUSB0 serial_baudrate:=115200 frame_id:=lidar_llink_1
 
 ##################On PC###########################
 cd ~/Documents/robodojo/slam
