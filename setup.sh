@@ -4,11 +4,19 @@ tmux new -s bringup
 source install/setup.bash
 ros2 launch bringup bringup.launch.py
 
+tmux new -s camera
+source install/setup.bash
+ros2 run bringup camera_publisher
+
 cd ~/slam1/ros2_ws
 tmux new -s rplidar
 source install/setup.bash
 ros2 launch rplidar_ros rplidar_a1_launch.py serial_port:=/dev/ttyUSB0 serial_baudrate:=115200 frame_id:=lidar_llink_1
 
+cd ~/robodojo/slam
+tmux new -s slam
+source install/setup.bash
+ros2 launch bringup slam.async.launch.py
 ##################On PC###########################
 cd ~/Documents/robodojo/slam
 source install/setup.bash
@@ -18,9 +26,9 @@ cd ~/Documents/robodojo/slam
 source install/setup.bash
 ros2 launch dekutamr_description display.launch.py
 
-cd ~/Documents/robodojo/slam
+#others
 source install/setup.bash
-ros2 launch bringup slam.async.launch.py
+ros2 run potato_disease_detection camera_viewer
 
 ##--------------confirm tree structure----------------##
 ros2 run tf2_tools view_frames

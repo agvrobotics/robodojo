@@ -95,7 +95,7 @@ void loop() {
       }
       else if (strncmp(buffer, "TIP,", 4) == 0) {
         int action = atoi(buffer + 4);
-        if (action == 1) targetAngle = 40;
+        if (action == 1) targetAngle = 60;
         else if (action == 0) targetAngle = 0;
       }
     }
