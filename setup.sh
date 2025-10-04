@@ -16,7 +16,7 @@ ros2 launch bringup teleop.launch.py
 
 cd ~/Documents/robodojo/slam
 source install/setup.bash
-ros2 launch dekut_amr_description display.launch.py
+ros2 launch dekutamr_description display.launch.py
 
 cd ~/Documents/robodojo/slam
 source install/setup.bash
