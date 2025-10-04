@@ -24,7 +24,7 @@ class OdomPublisher(Node):
         self.declare_parameter('wheel_radius', 0.0425)
         self.declare_parameter('wheel_separation', 0.232)
         self.declare_parameter('counts_per_rev', 4100)
-        self.declare_parameter('turning_gain', 1.0)
+        self.declare_parameter('turning_gain', 0.715)
         self.declare_parameter('publish_hz', 20.0)
         self.declare_parameter('smoothing_alpha', 0.3)
         self.declare_parameter('odom_frame', 'odom')
