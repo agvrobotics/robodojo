@@ -20,18 +20,14 @@ class CameraPublisher(Node):
 
         if not self.cap.isOpened():
             self.get_logger().error('Could not open camera')
-        
-        self.camera_ready_logged = False
+        else:
+            self.get_logger().info('Camera publisher ready')
 
     def timer_callback(self):
         ret, frame = self.cap.read()
         if not ret:
             self.get_logger().error('Failed to capture image')
             return
-        
-        if not hasattr(self, 'camera_ready_logged'):
-            self.get_logger().info('Camera publisher ready')
-            self.camera_ready_logged = True
 
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 80]
         success, buffer = cv2.imencode('.jpg', frame, encode_param)
