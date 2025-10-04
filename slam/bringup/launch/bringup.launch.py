@@ -17,4 +17,14 @@ def generate_launch_description():
             executable='odom_publisher',
             output='screen'
         ),
+        Node(
+            package='slam_toolbox',
+            executable='async_slam_toolbox_node',
+            name='slam_toolbox',
+            output='screen',
+            parameters=[
+                '/home/agv/robodojo/slam/bringup/params/mapper_params_online_async.yaml',
+                {'use_sim_time': False}
+            ]
+        ),
     ])
