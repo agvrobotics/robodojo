@@ -9,7 +9,7 @@ def generate_launch_description():
             name='slam_toolbox',
             output='screen',
             parameters=[
-                '/home/sierra-95/Documents/robodojo/slam/bringup/params/mapper_params_online_async.yaml',
+                '~/robodojo/slam/bringup/params/mapper_params_online_async.yaml',
                 {'use_sim_time': False}
             ]
         ),
