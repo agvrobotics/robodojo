@@ -18,6 +18,11 @@ def generate_launch_description():
             output='screen'
         ),
         Node(
+            package='bringup',
+            executable='camera_publisher',
+            output='screen',
+        ),
+        Node(
             package='slam_toolbox',
             executable='async_slam_toolbox_node',
             name='slam_toolbox',
