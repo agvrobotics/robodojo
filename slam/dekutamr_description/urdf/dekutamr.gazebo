@@ -2,6 +2,8 @@
 <robot name="dekutamr" xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
 <xacro:property name="body_color" value="Gazebo/Silver" />
+<xacro:property name="wheel_color" value="Gazebo/Blue" />
+<xacro:property name="lidar_color" value="Gazebo/Green" />
 
 <gazebo>
   <plugin name="control" filename="libgazebo_ros_control.so"/>
@@ -15,35 +17,35 @@
 </gazebo>
 
 <gazebo reference="frwheel_link_1">
-  <material>${body_color}</material>
+  <material>${wheel_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
 <gazebo reference="flwheel_link_1">
-  <material>${body_color}</material>
+  <material>${wheel_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
 <gazebo reference="blwheel_link_1">
-  <material>${body_color}</material>
+  <material>${wheel_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
 <gazebo reference="brwheel_link_1">
-  <material>${body_color}</material>
+  <material>${wheel_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
 <gazebo reference="lidar_llink_1">
-  <material>${body_color}</material>
+  <material>${lidar_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
@@ -54,6 +56,28 @@
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo>
+  <plugin name="control" filename="libgazebo_ros_diff_drive.so">
+    <!-- Wheel Information -->
+    <left_joint>bl_joint</left_joint>
+    <right_joint>br_joint</right_joint>
+    <wheel_separation>0.232</wheel_separation>
+    <wheel_diameter>0.085</wheel_diameter>
+
+    <!-- Limits -->
+    <max_wheel_torque>200</max_wheel_torque>
+    <max_wheel_acceleration>10.0</max_wheel_acceleration>
+
+    <!-- Output -->
+    <odometry_frame>odom</odometry_frame>
+    <robot_base_frame>base_link</robot_base_frame>
+
+    <publish_odom>true</publish_odom>
+    <publish_odom_tf>true</publish_odom_tf>
+    <publish_wheel_tf>true</publish_wheel_tf>
+  </plugin>
 </gazebo>
 
 </robot>
