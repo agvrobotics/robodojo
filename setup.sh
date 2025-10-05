@@ -39,4 +39,4 @@ ros2 param set /amcl base_frame_id base_link
 ros2 launch nav2_bringup localization_launch.py map:=/home/agv/robodojo/slam/michael.yaml use_sim_time:=false
 rviz type->fixed_frame: "map"
 ros2 param set /amcl base_frame_id base_link
-ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true params_file:=/home/agv/robodojo/slam/bringup/params/nav2_params.yaml
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true params_file:=/home/sierra-95/Documents/robodojo/slam/bringup/params/nav2_params.yaml
