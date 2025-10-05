@@ -27,7 +27,7 @@ ros2 launch bringup slam.localization.launch.py
 
 #METHOD 2: using map server
 #This method is unreliable, sometimes it works, sometimes it doesn't -> set durability in topic to transient local
-ros2 run nav2_map_server map_server --ros-args -p yaml_filename:=/home/sierra-95/Documents/robodojo/slam/michael_save.yaml 
+ros2 run nav2_map_server map_server --ros-args -p yaml_filename:=/home/sierra-95/Documents/robodojo/slam/michael.yaml 
 ros2 run nav2_util lifecycle_bringup map_server 
 #amcl for localisation
 ros2 run nav2_amcl amcl
@@ -36,7 +36,7 @@ ros2 param get /amcl base_frame_id
 ros2 param set /amcl base_frame_id base_link
 
 #METHOD 3: using nav2_bringup
-ros2 launch nav2_bringup localization_launch.py map:=/home/agv/robodojo/slam/bringup.yaml use_sim_time:=false
+ros2 launch nav2_bringup localization_launch.py map:=/home/agv/robodojo/slam/michael.yaml use_sim_time:=false
 rviz type->fixed_frame: "map"
 ros2 param set /amcl base_frame_id base_link
 ros2 launch nav2_bringup navigation_launch.py use_sim_time:=false map_subscribe_transient_local:=true params_file:=/home/agv/robodojo/slam/bringup/params/nav2_params.yaml
