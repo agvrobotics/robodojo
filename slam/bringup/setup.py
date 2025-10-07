@@ -13,7 +13,8 @@ setup(
         ('share/' + package_name + '/launch', [
             'launch/slam.localization.launch.py',
             'launch/bringup.launch.py',
-            'launch/teleop.launch.py'
+            'launch/teleop.launch.py',
+            'launch/slam.online_async.launch.py'
         ]),
     ],
     install_requires=['setuptools'],
