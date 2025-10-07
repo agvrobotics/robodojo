@@ -18,6 +18,10 @@ cd ~/Documents/robodojo/slam
 source install/setup.bash
 ros2 launch dekutamr_description display.launch.py
 
+#backup
+cd ~/Documents/robodojo/slam
+source install/setup.bash
+ros2 launch bringup slam.online_async.launch.py
 ##--------------confirm tree structure----------------##
 ros2 run tf2_tools view_frames
 
