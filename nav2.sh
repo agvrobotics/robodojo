@@ -6,3 +6,6 @@ ros2 lifecycle set /map_server 3 # activate
 
 #checking QOS on /map
 ros2 topic info /map --verbose
+
+##check chronyc
+chronyc sources -v
