@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root BTCPP_format="4">
   <BehaviorTree ID="Untitled">
-    <Sequence>
-      <ComputePathToPose goal="{goal}"
-                         start=""
-                         planner_id="GridBased"
-                         server_name=""
-                         server_timeout=""
-                         path="{path}"/>
+    <PipelineSequence>
+      <RateController hz="1">
+        <ComputePathToPose goal="{goal}"
+                           start=""
+                           planner_id="GridBased"
+                           server_name=""
+                           server_timeout=""
+                           path="{path}"/>
+      </RateController>
       <FollowPath controller_id="FollowPath"
                   path="{path}"
                   goal_checker_id=""
                   server_name=""
                   server_timeout=""/>
-    </Sequence>
+    </PipelineSequence>
   </BehaviorTree>
 
   <!-- Description of Node Models (used by Groot) -->
@@ -34,6 +36,10 @@
       <input_port name="server_name">Server name</input_port>
       <input_port name="server_timeout">Server timeout</input_port>
     </Action>
+    <Control ID="PipelineSequence"/>
+    <Decorator ID="RateController">
+      <input_port name="hz">Rate</input_port>
+    </Decorator>
   </TreeNodesModel>
 
 </root>
