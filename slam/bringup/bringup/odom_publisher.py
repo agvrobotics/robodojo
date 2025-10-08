@@ -28,7 +28,7 @@ class OdomPublisher(Node):
         self.declare_parameter('publish_hz', 20.0)
         self.declare_parameter('smoothing_alpha', 0.3)
         self.declare_parameter('odom_frame', 'odom')
-        self.declare_parameter('base_frame', 'base_link')
+        self.declare_parameter('base_frame', 'base_footprint')
         self.declare_parameter('pose_cov_xy', 0.02)
         self.declare_parameter('pose_cov_yaw', 0.05)
         self.declare_parameter('twist_cov_v', 0.02)
