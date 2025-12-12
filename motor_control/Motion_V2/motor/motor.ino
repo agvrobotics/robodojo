@@ -2,21 +2,21 @@
 
 // ------------------- Encoder pins -------------------
 // Left wheel encoder
-#define ENCA_L 20
-#define ENCB_L 21
+#define ENCA_L 18
+#define ENCB_L 19
 
 // Right wheel encoder
-#define ENCA_R 18
-#define ENCB_R 19
+#define ENCA_R 21
+#define ENCB_R 20
 
 // ------------------- Motor pins -------------------
 #define ENA 5   // Left motor enable
 #define ENB 6   // Right motor enable
 
-#define IN1 30  // Left motor IN1
-#define IN2 31  // Left motor IN2
-#define IN3 32  // Right motor IN1
-#define IN4 33  // Right motor IN2
+#define IN1 33  // Left motor IN1
+#define IN2 32  // Left motor IN2
+#define IN3 31  // Right motor IN1
+#define IN4 30  // Right motor IN2
 
 //--------------------Tipper Setup--------------------
 Servo tipper;
