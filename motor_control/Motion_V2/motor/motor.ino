@@ -1,34 +1,22 @@
 #include <Servo.h>
+
 // ------------------- Encoder pins -------------------
-// Front Right
-#define ENCA_FR 2   // Green
-#define ENCB_FR 3   // Yellow
+// Left wheel encoder
+#define ENCA_L 20
+#define ENCB_L 21
 
-// Rear Left
-#define ENCA_RL 18  // Green
-#define ENCB_RL 19  // Yellow
-
-// Rear Right
-#define ENCA_RR 20  // Yellow
-#define ENCB_RR 21  // Green
-
+// Right wheel encoder
+#define ENCA_R 18
+#define ENCB_R 19
 
 // ------------------- Motor pins -------------------
-// Front Motors (Driver 1)
-#define ENA_F 5
-#define ENB_F 6
-#define IN1_F 22
-#define IN2_F 23
-#define IN3_F 24
-#define IN4_F 25
+#define ENA 5   // Left motor enable
+#define ENB 6   // Right motor enable
 
-// Rear Motors (Driver 2)
-#define ENA_R 7
-#define ENB_R 8
-#define IN1_R 26
-#define IN2_R 27
-#define IN3_R 28
-#define IN4_R 29
+#define IN1 30  // Left motor IN1
+#define IN2 31  // Left motor IN2
+#define IN3 32  // Right motor IN1
+#define IN4 33  // Right motor IN2
 
 //--------------------Tipper Setup--------------------
 Servo tipper;
@@ -40,9 +28,8 @@ int currentAngle = 0;
 unsigned long lastStepTime = 0;
 
 // ------------------- Encoder counters -------------------
-volatile long countFR = 0;
-volatile long countRL = 0;
-volatile long countRR = 0;
+volatile long countL = 0;
+volatile long countR = 0;
 
 // ------------------- Timing -------------------
 unsigned long lastReport = 0;
@@ -50,26 +37,23 @@ const unsigned long reportInterval = 50;
 
 void setup() {
   // Motor pins
-  pinMode(ENA_F, OUTPUT); pinMode(ENB_F, OUTPUT);
-  pinMode(IN1_F, OUTPUT); pinMode(IN2_F, OUTPUT);
-  pinMode(IN3_F, OUTPUT); pinMode(IN4_F, OUTPUT);
-  pinMode(ENA_R, OUTPUT); pinMode(ENB_R, OUTPUT);
-  pinMode(IN1_R, OUTPUT); pinMode(IN2_R, OUTPUT);
-  pinMode(IN3_R, OUTPUT); pinMode(IN4_R, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
 
   // Encoder interrupts
-  attachInterrupt(digitalPinToInterrupt(ENCA_FR), readEncoderFR_A, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(ENCB_FR), readEncoderFR_B, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENCA_L), readEncoderL_A, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENCB_L), readEncoderL_B, CHANGE);
 
-  attachInterrupt(digitalPinToInterrupt(ENCA_RL), readEncoderRL_A, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(ENCB_RL), readEncoderRL_B, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENCA_R), readEncoderR_A, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENCB_R), readEncoderR_B, CHANGE);
 
-  attachInterrupt(digitalPinToInterrupt(ENCA_RR), readEncoderRR_A, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(ENCB_RR), readEncoderRR_B, CHANGE);
-
-  // Servo pins
+  // Servo
   tipper.attach(servoPin);
-  tipper.write(0); 
+  tipper.write(0);
 
   Serial.begin(115200);
 }
@@ -80,7 +64,7 @@ void loop() {
   if (Serial.available()) {
     int len = Serial.readBytesUntil('\n', buffer, sizeof(buffer) - 1);
     if (len > 0) {
-      buffer[len] = '\0'; // null terminate
+      buffer[len] = '\0';
 
       if (strncmp(buffer, "VEL,", 4) == 0) {
         char *p = strtok(buffer + 4, ",");
@@ -102,69 +86,49 @@ void loop() {
   }
 
   updateServo();
-  // Report encoder counts at fixed rate
+
   if (millis() - lastReport >= reportInterval) {
     lastReport = millis();
-    Serial.print(countRL);
+    Serial.print(countL);
     Serial.print(",");
-    Serial.print(countRR);
-    Serial.println();
+    Serial.println(countR);
   }
 }
 
 // ------------------- Convert cmd_vel to PWM -------------------
 void setMotorPWM(float linear, float angular) {
-  //wheelbase is the distance between the left and right wheel contact points
   const float WHEEL_BASE = 0.2325;
   const int MAX_PWM = 255;
 
-  const float MAX_LINEAR  = 0.425;   // measured m/s
-  const float MAX_ANGULAR = 2.99;    // measured rad/s
+  const float MAX_LINEAR  = 0.425;
+  const float MAX_ANGULAR = 2.99;
 
-  // Clip incoming commands to max
-  if (linear > MAX_LINEAR) linear = MAX_LINEAR;
-  if (linear < -MAX_LINEAR) linear = -MAX_LINEAR;
-  if (angular > MAX_ANGULAR) angular = MAX_ANGULAR;
-  if (angular < -MAX_ANGULAR) angular = -MAX_ANGULAR;
+  // Clamp
+  linear = constrain(linear, -MAX_LINEAR, MAX_LINEAR);
+  angular = constrain(angular, -MAX_ANGULAR, MAX_ANGULAR);
 
-  // Differential drive kinematics
   float v_left  = linear - (angular * WHEEL_BASE / 2.0);
   float v_right = linear + (angular * WHEEL_BASE / 2.0);
 
-  // Scale to PWM
-  int pwmFL = constrain(int((v_left / MAX_LINEAR) * MAX_PWM), -MAX_PWM, MAX_PWM);
-  int pwmFR = constrain(int((v_right / MAX_LINEAR) * MAX_PWM), -MAX_PWM, MAX_PWM);
-  int pwmRL = pwmFL;
-  int pwmRR = pwmFR;
+  int pwmL = constrain(int((v_left  / MAX_LINEAR) * MAX_PWM), -MAX_PWM, MAX_PWM);
+  int pwmR = constrain(int((v_right / MAX_LINEAR) * MAX_PWM), -MAX_PWM, MAX_PWM);
 
   // Deadzone
-  if (abs(pwmFL) < 30) pwmFL = 0;
-  if (abs(pwmFR) < 30) pwmFR = 0;
-  if (abs(pwmRL) < 30) pwmRL = 0;
-  if (abs(pwmRR) < 30) pwmRR = 0;
+  if (abs(pwmL) < 30) pwmL = 0;
+  if (abs(pwmR) < 30) pwmR = 0;
 
-  // Front Left
-  if (pwmFL >= 0) { digitalWrite(IN1_F,HIGH); digitalWrite(IN2_F,LOW); }
-  else { digitalWrite(IN1_F,LOW); digitalWrite(IN2_F,HIGH); pwmFL = -pwmFL; }
-  analogWrite(ENA_F, pwmFL);
+  // Left motor
+  if (pwmL >= 0) { digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW); }
+  else { digitalWrite(IN1, LOW); digitalWrite(IN2, HIGH); pwmL = -pwmL; }
+  analogWrite(ENA, pwmL);
 
-  // Front Right
-  if (pwmFR >= 0) { digitalWrite(IN3_F,HIGH); digitalWrite(IN4_F,LOW); }
-  else { digitalWrite(IN3_F,LOW); digitalWrite(IN4_F,HIGH); pwmFR = -pwmFR; }
-  analogWrite(ENB_F, pwmFR);
-
-  // Rear Left
-  if (pwmRL >= 0) { digitalWrite(IN3_R,HIGH); digitalWrite(IN4_R,LOW); }
-  else { digitalWrite(IN3_R,LOW); digitalWrite(IN4_R,HIGH); pwmRL = -pwmRL; }
-  analogWrite(ENA_R, pwmRL);
-
-  // Rear Right
-  if (pwmRR >= 0) { digitalWrite(IN1_R,HIGH); digitalWrite(IN2_R,LOW); }
-  else { digitalWrite(IN1_R,LOW); digitalWrite(IN2_R,HIGH); pwmRR = -pwmRR; }
-  analogWrite(ENB_R, pwmRR);
-
+  // Right motor
+  if (pwmR >= 0) { digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW); }
+  else { digitalWrite(IN3, LOW); digitalWrite(IN4, HIGH); pwmR = -pwmR; }
+  analogWrite(ENB, pwmR);
 }
 
+// ------------------- Servo update -------------------
 void updateServo() {
   unsigned long now = millis();
   if (now - lastStepTime >= stepDelay) {
@@ -184,11 +148,8 @@ void updateServo() {
 }
 
 // ------------------- Encoder ISRs -------------------
-void readEncoderFR_A() { int a=digitalRead(ENCA_FR), b=digitalRead(ENCB_FR); if(a==b) countFR++; else countFR--; }
-void readEncoderFR_B() { int a=digitalRead(ENCA_FR), b=digitalRead(ENCB_FR); if(a!=b) countFR++; else countFR--; }
+void readEncoderL_A() { int a = digitalRead(ENCA_L), b = digitalRead(ENCB_L); if (a == b) countL++; else countL--; }
+void readEncoderL_B() { int a = digitalRead(ENCA_L), b = digitalRead(ENCB_L); if (a != b) countL++; else countL--; }
 
-void readEncoderRL_A() { int a=digitalRead(ENCA_RL), b=digitalRead(ENCB_RL); if(a==b) countRL++; else countRL--; }
-void readEncoderRL_B() { int a=digitalRead(ENCA_RL), b=digitalRead(ENCB_RL); if(a!=b) countRL++; else countRL--; }
-
-void readEncoderRR_A() { int a=digitalRead(ENCA_RR), b=digitalRead(ENCB_RR); if(a==b) countRR++; else countRR--; }
-void readEncoderRR_B() { int a=digitalRead(ENCA_RR), b=digitalRead(ENCB_RR); if(a!=b) countRR++; else countRR--; }
+void readEncoderR_A() { int a = digitalRead(ENCA_R), b = digitalRead(ENCB_R); if (a == b) countR++; else countR--; }
+void readEncoderR_B() { int a = digitalRead(ENCA_R), b = digitalRead(ENCB_R); if (a != b) countR++; else countR--; }

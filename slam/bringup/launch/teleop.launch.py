@@ -33,7 +33,7 @@ def generate_launch_description():
             name='twist_mux',
             output='screen',
             parameters=[
-                '/home/sierra-95/Documents/robodojo/slam/bringup/params/twist_mux_topics.yaml'                      
+                '/home/sierra-95/Documents/agv/robodojo/slam/bringup/params/twist_mux_topics.yaml'                      
             ],
         ),
         Node(
