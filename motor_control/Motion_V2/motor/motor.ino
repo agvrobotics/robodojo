@@ -13,17 +13,17 @@
 #define ENA 5   // Left motor enable
 #define ENB 6   // Right motor enable
 
-#define IN1 33  // Left motor IN1
-#define IN2 32  // Left motor IN2
-#define IN3 31  // Right motor IN1
-#define IN4 30  // Right motor IN2
+#define IN1 45// Left motor IN1
+#define IN2 44// Left motor IN2
+#define IN3 43// Right motor IN1
+#define IN4 42  // Right motor IN2
 
 //--------------------Tipper Setup--------------------
 Servo tipper;
 const int servoPin = 9;
 const int stepSize = 2;
 const int stepDelay = 10; 
-int targetAngle = 0;
+int targetAngle = 0; 
 int currentAngle = 0;
 unsigned long lastStepTime = 0;
 
